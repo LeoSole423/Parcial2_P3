@@ -21,17 +21,13 @@ void p_casos(int m,BinaryTree<Caso> B){
     B.backwards(n);
 }
 
-
-
-
-
 void read_and_order_age(BinaryTree<Caso> &Orden){
     Caso myCase;
     string line_csv[25];
     string line_titles_csv;
     int count = 0;
     ifstream myFile;
-    myFile.open("C:/Users/leone/Desktop/TP Progra3/test.csv");
+    myFile.open("C:/Users/leone/Desktop/Parcial2_P3/test.csv");
     getline(myFile, line_titles_csv);
     while (myFile.good()) {
         string complete_line_csv;
