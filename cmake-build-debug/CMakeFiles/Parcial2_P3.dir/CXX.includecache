@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/leone/Desktop/Parcial2_P3/BinaryTree.h
+TreeNode.h
+C:/Users/leone/Desktop/Parcial2_P3/TreeNode.h
+iostream
+-
+string
+-
+
+C:/Users/leone/Desktop/Parcial2_P3/Case.h
+string
+-
+ostream
+-
+
+C:/Users/leone/Desktop/Parcial2_P3/TreeNode.h
+
+C:/Users/leone/Desktop/Parcial2_P3/main.cpp
+iostream
+-
+fstream
+-
+string
+-
+Case.h
+C:/Users/leone/Desktop/Parcial2_P3/Case.h
+BinaryTree.h
+C:/Users/leone/Desktop/Parcial2_P3/BinaryTree.h
+
