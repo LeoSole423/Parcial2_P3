@@ -3,4 +3,4 @@ project(Parcial2_P3)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Parcial2_P3 main.cpp Case.h TreeNode.h BinaryTree.h)
+add_executable(Parcial2_P3 main.cpp Case.h TreeNode.h BinaryTree.h Provincia.h)
