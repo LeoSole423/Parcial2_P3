@@ -18,11 +18,19 @@ int main(int argc,char *argv[]) {
 }
 
 
-void read_and_save(Provincia *Provincias){
+void read_and_save(Provincia *Provincias) {
     //Caso myCase;
     string line_csv[25];
     string line_titles_csv;
-    float count_samples=0,count_infected=0,count_death=0;
+    float count_samples = 0, count_infected = 0, count_death = 0;
+    int inf_RE_10A[11];
+    for (int i = 0; i < 12; i++) {
+        inf_RE_10A[i] = 0;
+    }
+    int f_RE_10A[11];
+    for (int i = 0; i < 12; i++) {
+        f_RE_10A[i] = 0;
+    }
     ifstream myFile;
     myFile.open("C:/Users/leone/Desktop/Covid19Casos.csv");
     getline(myFile, line_titles_csv);
@@ -31,107 +39,183 @@ void read_and_save(Provincia *Provincias){
         getline(myFile, complete_line_csv);
         for (int i = 0; i < 25; i++) {
             line_csv[i] = complete_line_csv.substr(0, complete_line_csv.find(','));
-            complete_line_csv = complete_line_csv.substr( complete_line_csv.find(',')+1,complete_line_csv.length()-1);
+            complete_line_csv = complete_line_csv.substr(complete_line_csv.find(',') + 1,
+                                                         complete_line_csv.length() - 1);
             if (line_csv[i].length() > 2) { line_csv[i] = line_csv[i].substr(1, line_csv[i].length() - 2); }
         }
         //Contadores para analisis Estadistico
         count_samples++;
-        if(line_csv[19].find("confirmado")!= -1) count_infected++;
-        if(line_csv[14]=="SI") count_death++;
+        if (line_csv[19].find("confirmado") != -1) count_infected++;
+        if (line_csv[14] == "SI") count_death++;
+        // Infectados por Rango Etario 10
+        if (line_csv[19].find("confirmado") != -1) {
+            if (line_csv[2] == "") line_csv[2] = "-1";
+            if (stoi(line_csv[2]) < 10 || line_csv[4] == "Meses") {
+                inf_RE_10A[0]++;
+            }
+            if (stoi(line_csv[2]) > 10 && stoi(line_csv[2]) < 20) {
+                inf_RE_10A[1]++;
+            }
+            if (stoi(line_csv[2]) > 20 && stoi(line_csv[2]) < 30) {
+                inf_RE_10A[2]++;
+            }
+            if (stoi(line_csv[2]) > 30 && stoi(line_csv[2]) < 40) {
+                inf_RE_10A[3]++;
+            }
+            if (stoi(line_csv[2]) > 40 && stoi(line_csv[2]) < 50) {
+                inf_RE_10A[4]++;
+            }
+            if (stoi(line_csv[2]) > 50 && stoi(line_csv[2]) < 60) {
+                inf_RE_10A[5]++;
+            }
+            if (stoi(line_csv[2]) > 60 && stoi(line_csv[2]) < 70) {
+                inf_RE_10A[6]++;
+            }
+            if (stoi(line_csv[2]) > 70 && stoi(line_csv[2]) < 80) {
+                inf_RE_10A[7]++;
+            }
+            if (stoi(line_csv[2]) > 80 && stoi(line_csv[2]) < 90) {
+                inf_RE_10A[8]++;
+            }
+            if (stoi(line_csv[2]) > 90 && stoi(line_csv[2]) < 100) {
+                inf_RE_10A[9]++;
+            }
+            if (stoi(line_csv[2]) > 100 && stoi(line_csv[2]) < 110) {
+                inf_RE_10A[10]++;
+            }
+        }
+        //Muertos por Rango Etario 10
+        if (line_csv[14] == "SI") {
+            if (line_csv[2] == "") line_csv[2] = "-1";
+            if (stoi(line_csv[2]) < 10 || line_csv[4] == "Meses") {
+                f_RE_10A[0]++;
+            }
+            if (stoi(line_csv[2]) > 10 && stoi(line_csv[2]) < 20) {
+                f_RE_10A[1]++;
+            }
+            if (stoi(line_csv[2]) > 20 && stoi(line_csv[2]) < 30) {
+                f_RE_10A[2]++;
+            }
+            if (stoi(line_csv[2]) > 30 && stoi(line_csv[2]) < 40) {
+                f_RE_10A[3]++;
+            }
+            if (stoi(line_csv[2]) > 40 && stoi(line_csv[2]) < 50) {
+                f_RE_10A[4]++;
+            }
+            if (stoi(line_csv[2]) > 50 && stoi(line_csv[2]) < 60) {
+                f_RE_10A[5]++;
+            }
+            if (stoi(line_csv[2]) > 60 && stoi(line_csv[2]) < 70) {
+                f_RE_10A[6]++;
+            }
+            if (stoi(line_csv[2]) > 70 && stoi(line_csv[2]) < 80) {
+                f_RE_10A[7]++;
+            }
+            if (stoi(line_csv[2]) > 80 && stoi(line_csv[2]) < 90) {
+                f_RE_10A[8]++;
+            }
+            if (stoi(line_csv[2]) > 90 && stoi(line_csv[2]) < 100) {
+                f_RE_10A[9]++;
+            }
+            if (stoi(line_csv[2]) > 100 && stoi(line_csv[2]) < 110) {
+                f_RE_10A[10]++;
+            }
+        }
+
         //Contadores en Provincias
-        if(line_csv[5]=="CABA") {
+        if (line_csv[5] == "CABA") {
             if (line_csv[19].find("confirmado") != -1) Provincias[23].contagios++;
             if (line_csv[14] == "SI") Provincias[23].muertes++;
         }
-        if(line_csv[5]=="Buenos Aires") {
+        if (line_csv[5] == "Buenos Aires") {
             if (line_csv[19].find("confirmado") != -1) Provincias[0].contagios++;
             if (line_csv[14] == "SI") Provincias[0].muertes++;
         }
-       if(line_csv[5]=="La Pampa") {
-           if (line_csv[19].find("confirmado") != -1) Provincias[1].contagios++;
-           if (line_csv[14] == "SI") Provincias[1].muertes++;
-       }
-        if(line_csv[5]=="Córdoba") {
+        if (line_csv[5] == "La Pampa") {
+            if (line_csv[19].find("confirmado") != -1) Provincias[1].contagios++;
+            if (line_csv[14] == "SI") Provincias[1].muertes++;
+        }
+        if (line_csv[5] == "Córdoba") {
             if (line_csv[19].find("confirmado") != -1) Provincias[2].contagios++;
             if (line_csv[14] == "SI") Provincias[2].muertes++;
         }
-        if(line_csv[5]=="Salta") {
+        if (line_csv[5] == "Salta") {
             if (line_csv[19].find("confirmado") != -1) Provincias[3].contagios++;
             if (line_csv[14] == "SI") Provincias[3].muertes++;
         }
-        if(line_csv[5]=="Jujuy") {
+        if (line_csv[5] == "Jujuy") {
             if (line_csv[19].find("confirmado") != -1) Provincias[4].contagios++;
             if (line_csv[14] == "SI") Provincias[4].muertes++;
         }
-        if(line_csv[5]=="Formosa") {
+        if (line_csv[5] == "Formosa") {
             if (line_csv[19].find("confirmado") != -1) Provincias[5].contagios++;
             if (line_csv[14] == "SI") Provincias[5].muertes++;
         }
-        if(line_csv[5]=="Santiago del Estero") {
+        if (line_csv[5] == "Santiago del Estero") {
             if (line_csv[19].find("confirmado") != -1) Provincias[6].contagios++;
             if (line_csv[14] == "SI") Provincias[6].muertes++;
         }
-        if(line_csv[5]=="Misiones") {
+        if (line_csv[5] == "Misiones") {
             if (line_csv[19].find("confirmado") != -1) Provincias[7].contagios++;
             if (line_csv[14] == "SI") Provincias[7].muertes++;
         }
-        if(line_csv[5]=="Corrientes") {
+        if (line_csv[5] == "Corrientes") {
             if (line_csv[19].find("confirmado") != -1) Provincias[8].contagios++;
             if (line_csv[14] == "SI") Provincias[8].muertes++;
         }
-        if(line_csv[5]=="Tucumán") {
+        if (line_csv[5] == "Tucumán") {
             if (line_csv[19].find("confirmado") != -1) Provincias[9].contagios++;
             if (line_csv[14] == "SI") Provincias[9].muertes++;
         }
-        if(line_csv[5]=="Chaco") {
+        if (line_csv[5] == "Chaco") {
             if (line_csv[19].find("confirmado") != -1) Provincias[10].contagios++;
             if (line_csv[14] == "SI") Provincias[10].muertes++;
         }
-        if(line_csv[5]=="La Rioja") {
+        if (line_csv[5] == "La Rioja") {
             if (line_csv[19].find("confirmado") != -1) Provincias[11].contagios++;
             if (line_csv[14] == "SI") Provincias[11].muertes++;
         }
-        if(line_csv[5]=="San Juan") {
+        if (line_csv[5] == "San Juan") {
             if (line_csv[19].find("confirmado") != -1) Provincias[12].contagios++;
             if (line_csv[14] == "SI") Provincias[12].muertes++;
         }
-        if(line_csv[5]=="Mendoza") {
+        if (line_csv[5] == "Mendoza") {
             if (line_csv[19].find("confirmado") != -1) Provincias[13].contagios++;
             if (line_csv[14] == "SI") Provincias[13].muertes++;
         }
-        if(line_csv[5]=="Entre Ríos") {
+        if (line_csv[5] == "Entre Ríos") {
             if (line_csv[19].find("confirmado") != -1) Provincias[14].contagios++;
             if (line_csv[14] == "SI") Provincias[14].muertes++;
         }
-        if(line_csv[5]=="San Luis") {
+        if (line_csv[5] == "San Luis") {
             if (line_csv[19].find("confirmado") != -1) Provincias[15].contagios++;
             if (line_csv[14] == "SI") Provincias[15].muertes++;
         }
-        if(line_csv[5]=="Catamarca") {
+        if (line_csv[5] == "Catamarca") {
             if (line_csv[19].find("confirmado") != -1) Provincias[16].contagios++;
             if (line_csv[14] == "SI") Provincias[16].muertes++;
         }
-        if(line_csv[5]=="Santa Fe") {
+        if (line_csv[5] == "Santa Fe") {
             if (line_csv[19].find("confirmado") != -1) Provincias[17].contagios++;
             if (line_csv[14] == "SI") Provincias[17].muertes++;
         }
-        if(line_csv[5]=="Neuquén") {
+        if (line_csv[5] == "Neuquén") {
             if (line_csv[19].find("confirmado") != -1) Provincias[18].contagios++;
             if (line_csv[14] == "SI") Provincias[18].muertes++;
         }
-        if(line_csv[5]=="Río Negro") {
+        if (line_csv[5] == "Río Negro") {
             if (line_csv[19].find("confirmado") != -1) Provincias[19].contagios++;
             if (line_csv[14] == "SI") Provincias[19].muertes++;
         }
-        if(line_csv[5]=="Chubut") {
+        if (line_csv[5] == "Chubut") {
             if (line_csv[19].find("confirmado") != -1) Provincias[20].contagios++;
             if (line_csv[14] == "SI") Provincias[20].muertes++;
         }
-        if(line_csv[5]=="Santa Cruz") {
+        if (line_csv[5] == "Santa Cruz") {
             if (line_csv[19].find("confirmado") != -1) Provincias[21].contagios++;
             if (line_csv[14] == "SI") Provincias[21].muertes++;
         }
-        if(line_csv[5]=="Tierra del Fuego") {
+        if (line_csv[5] == "Tierra del Fuego") {
             if (line_csv[19].find("confirmado") != -1) Provincias[22].contagios++;
             if (line_csv[14] == "SI") Provincias[22].muertes++;
         }
@@ -144,13 +228,21 @@ void read_and_save(Provincia *Provincias){
         Orden.put(myCase);*/
     }
     //Analisis Estadistico
-    cout<<"Cantidad total de muestras: "<<count_samples<<endl;
-    cout<<"Cantidad total de infectados: "<<count_infected<<endl;
-    cout<<"Cantidad total de muertos: "<<count_death<<endl;
-    cout<<"% Infectados por muestra: "<<(count_infected/count_samples)*100<<"%"<<endl;
-    cout<<"% Fallecidos por muestra: "<<(count_death/count_samples)*100<<"%"<<endl;
-    //
-    myFile.close();
+    cout << "Cantidad total de muestras: " << count_samples << endl;
+    cout << "Cantidad total de infectados: " << count_infected << endl;
+    cout << "Cantidad total de muertos: " << count_death << endl;
+    cout << "% Infectados por muestra: " << (count_infected / count_samples) * 100 << "%" << endl;
+    cout << "% Fallecidos por muestra: " << (count_death / count_samples) * 100 << "%" << endl;
+    cout << "Infectados por Rango Etario" << endl;
+    for (int i = 0; i < 11; i++) {
+        cout << "Infectados entre " << 10 * i << " y " << 10 * (i + 1) << ": " << inf_RE_10A[i] << endl;
+        cout <<endl<< "Fallecidos por Rango Etario" << endl;
+        for (int i = 0; i < 11; i++) {
+            cout << "Fallecidos entre " << 10 * i << " y " << 10 * (i + 1) << ": " << f_RE_10A[i] << endl;
+        }
+        //
+        myFile.close();
+    }
 }
 
 void generate_all_Provincias(Provincia *Provincias){
