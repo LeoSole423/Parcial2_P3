@@ -57,8 +57,9 @@ public:
         return os;
     }
 
+
     bool operator<(const Caso &rhs) const {
-        return edad < rhs.edad;
+        return id < rhs.id;
     }
 
     bool operator>(const Caso &rhs) const {

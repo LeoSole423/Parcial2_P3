@@ -88,6 +88,21 @@
 		<Unit filename="C:/Users/leone/Desktop/Parcial2_P3/Case.h">
 			<Option target="Parcial2_P3"/>
 		</Unit>
+		<Unit filename="C:/Users/leone/Desktop/Parcial2_P3/HashEntry.h">
+			<Option target="Parcial2_P3"/>
+		</Unit>
+		<Unit filename="C:/Users/leone/Desktop/Parcial2_P3/HashMap.h">
+			<Option target="Parcial2_P3"/>
+		</Unit>
+		<Unit filename="C:/Users/leone/Desktop/Parcial2_P3/List.h">
+			<Option target="Parcial2_P3"/>
+		</Unit>
+		<Unit filename="C:/Users/leone/Desktop/Parcial2_P3/Node.h">
+			<Option target="Parcial2_P3"/>
+		</Unit>
+		<Unit filename="C:/Users/leone/Desktop/Parcial2_P3/Par.h">
+			<Option target="Parcial2_P3"/>
+		</Unit>
 		<Unit filename="C:/Users/leone/Desktop/Parcial2_P3/Provincia.h">
 			<Option target="Parcial2_P3"/>
 		</Unit>

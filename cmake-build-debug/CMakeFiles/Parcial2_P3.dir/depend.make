@@ -3,6 +3,11 @@
 
 CMakeFiles/Parcial2_P3.dir/main.cpp.obj: ../BinaryTree.h
 CMakeFiles/Parcial2_P3.dir/main.cpp.obj: ../Case.h
+CMakeFiles/Parcial2_P3.dir/main.cpp.obj: ../HasMapTree.h
+CMakeFiles/Parcial2_P3.dir/main.cpp.obj: ../HashEntry.h
+CMakeFiles/Parcial2_P3.dir/main.cpp.obj: ../List.h
+CMakeFiles/Parcial2_P3.dir/main.cpp.obj: ../Node.h
+CMakeFiles/Parcial2_P3.dir/main.cpp.obj: ../Par.h
 CMakeFiles/Parcial2_P3.dir/main.cpp.obj: ../Provincia.h
 CMakeFiles/Parcial2_P3.dir/main.cpp.obj: ../TreeNode.h
 CMakeFiles/Parcial2_P3.dir/main.cpp.obj: ../main.cpp

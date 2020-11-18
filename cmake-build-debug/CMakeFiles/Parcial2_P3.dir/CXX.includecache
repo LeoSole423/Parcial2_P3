@@ -20,6 +20,24 @@ string
 ostream
 -
 
+C:/Users/leone/Desktop/Parcial2_P3/HasMapTree.h
+HashEntry.h
+C:/Users/leone/Desktop/Parcial2_P3/HashEntry.h
+BinaryTree.h
+C:/Users/leone/Desktop/Parcial2_P3/BinaryTree.h
+
+C:/Users/leone/Desktop/Parcial2_P3/HashEntry.h
+
+C:/Users/leone/Desktop/Parcial2_P3/List.h
+Node.h
+C:/Users/leone/Desktop/Parcial2_P3/Node.h
+iostream
+-
+
+C:/Users/leone/Desktop/Parcial2_P3/Node.h
+
+C:/Users/leone/Desktop/Parcial2_P3/Par.h
+
 C:/Users/leone/Desktop/Parcial2_P3/Provincia.h
 string
 -
@@ -39,4 +57,10 @@ BinaryTree.h
 C:/Users/leone/Desktop/Parcial2_P3/BinaryTree.h
 Provincia.h
 C:/Users/leone/Desktop/Parcial2_P3/Provincia.h
+HasMapTree.h
+C:/Users/leone/Desktop/Parcial2_P3/HasMapTree.h
+List.h
+C:/Users/leone/Desktop/Parcial2_P3/List.h
+Par.h
+C:/Users/leone/Desktop/Parcial2_P3/Par.h
 
