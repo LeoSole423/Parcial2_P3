@@ -8,23 +8,22 @@ using namespace std;
 #include "HasMapTree.h"
 #include "List.h"
 #include "Par.h"
+#include <string.h>
 
-void read_and_save(Provincia *Provincias);
+void read_and_save(Provincia *Provincias,int argc,char **argv);
 void generate_all_Provincias(Provincia *Provincias);
 template <typename T> void quicksort(T *arr, int start, int end);
 unsigned int miHF(string c);
-//void p_casos(int m,BinaryTree<Caso> B);
 
-int main(int argc,char *argv[]) {
-    Provincia Provincias[24];
-    generate_all_Provincias(Provincias);
-    read_and_save(Provincias);
-//    quicksort(Provincias,0,23);
-    return 0;
+int main(int argc,char **argv) {
+        Provincia Provincias[24];
+        generate_all_Provincias(Provincias);
+        read_and_save(Provincias,argc,argv);
+        return 0;
 }
 
 
-void read_and_save(Provincia *Provincias) {
+void read_and_save(Provincia *Provincias,int argc,char **argv) {
     Caso myCases;
     HashMapTree<string,List<Caso>*> Orden(24,miHF);
     string line_csv[25];
@@ -49,8 +48,9 @@ void read_and_save(Provincia *Provincias) {
                                                          complete_line_csv.length() - 1);
             if (line_csv[i].length() > 2) { line_csv[i] = line_csv[i].substr(1, line_csv[i].length() - 2); }
         }
-        //Contadores para analisis Estadistico
         count_samples++;
+        //Contadores para analisis Estadistico
+        if( strcmp(argv[1],"-estad")==0){
         if (line_csv[19].find("confirmado") != -1) count_infected++;
         if (line_csv[14] == "SI") count_death++;
         // Infectados por Rango Etario 10
@@ -127,8 +127,10 @@ void read_and_save(Provincia *Provincias) {
                 f_RE_10A[10]++;
             }
         }
+        }
 
         //Contadores en Provincias
+        if(strcmp(argv[1],"-p_casos")==0 || strcmp(argv[1],"-p_muertes")==0){
         if (line_csv[5] == "CABA") {
             if (line_csv[19].find("confirmado") != -1) Provincias[23].contagios++;
             if (line_csv[14] == "SI") Provincias[23].muertes++;
@@ -225,13 +227,15 @@ void read_and_save(Provincia *Provincias) {
             if (line_csv[19].find("confirmado") != -1) Provincias[22].contagios++;
             if (line_csv[14] == "SI") Provincias[22].muertes++;
         }
+        }
         //Muestra la carga
         if(count_samples%10000==0) {
-            cout<<count_samples<<endl;
+            cout<<(count_samples*100)/2710000<<"%"<<endl;
         }
         if(line_csv[2]=="") line_csv[2]="-1"; //Arregla error stoi
         if(line_csv[0]=="") break;
         //Clase Case ordenada en tabla hash con arbol
+        if(strcmp(argv[1],"-estad")!=0){
          myCases = {stoi(line_csv[0]),
                     line_csv[1],
                     stoi(line_csv[2]),
@@ -264,23 +268,67 @@ void read_and_save(Provincia *Provincias) {
             Orden.put(myCases.residencia_provincia_nombre,new List<Caso>());
             Orden.get(myCases.residencia_provincia_nombre)->insert(0,myCases);
         }
-    }
-    //Analisis Estadistico
-    cout << "Cantidad total de muestras: " << count_samples << endl;
-    cout << "Cantidad total de infectados: " << count_infected << endl;
-    cout << "Cantidad total de muertos: " << count_death << endl;
-    cout << "% Infectados por muestra: " << (count_infected / (float)count_samples) * 100 << "%" << endl;
-    cout << "% Fallecidos por muestra: " << (count_death / (float)count_samples) * 100 << "%" << endl;
-    cout << "Infectados por Rango Etario" << endl;
-    for (int i = 0; i < 11; i++) {
-        cout << "Infectados entre " << 10 * i << " y " << 10 * (i + 1) << ": " << inf_RE_10A[i] << endl;
-    }
-    cout <<endl<< "Fallecidos por Rango Etario" << endl;
-    for (int i = 0; i < 11; i++) {
-        cout << "Fallecidos entre " << 10 * i << " y " << 10 * (i + 1) << ": " << f_RE_10A[i] << endl;
+        }
     }
     myFile.close();
-
+    //Analisis Estadistico
+    if(strcmp(argv[1],"-estad")==0) {
+        cout << "Cantidad total de muestras: " << count_samples << endl;
+        cout << "Cantidad total de infectados: " << count_infected << endl;
+        cout << "Cantidad total de muertos: " << count_death << endl;
+        cout << "% Infectados por muestra: " << (count_infected / (float) count_samples) * 100 << "%" << endl;
+        cout << "% Fallecidos por muestra: " << (count_death / (float) count_samples) * 100 << "%" << endl;
+        cout << "Infectados por Rango Etario" << endl;
+        for (int i = 0; i < 11; i++) {
+            cout << "Infectados entre " << 10 * i << " y " << 10 * (i + 1) << ": " << inf_RE_10A[i] << endl;
+        }
+        cout << endl << "Fallecidos por Rango Etario" << endl;
+        for (int i = 0; i < 11; i++) {
+            cout << "Fallecidos entre " << 10 * i << " y " << 10 * (i + 1) << ": " << f_RE_10A[i] << endl;
+        }
+    }
+    //p_casos
+    if(strcmp(argv[1],"-p_casos")==0) {
+        Par<unsigned int, Provincia> porInfectados[24];
+        for (int i = 0; i < 24; i++) {
+            porInfectados[i] = {Provincias[i].contagios, Provincias[i]};
+        }
+        quicksort(porInfectados, 0, 23);
+        int n;
+        if(argc<=2)
+            n=10;
+        else
+            n = stoi(argv[2]);
+        for (int i = 0; i < n; i++) {
+            cout << porInfectados[i].valor.Nombre << ": " << endl;
+            cout << "Cantidad de contagios: " << porInfectados[i].valor.contagios << endl;
+        }
+        /*for (int i = 0; i < n; i++) {
+            cout << "Lista de casos en: "<<porInfectados[i].valor.Nombre<< endl;
+            Orden.get(porInfectados[i].valor.Nombre)->print();
+        }*/
+    }
+    //p_muertes
+    if(strcmp(argv[1],"-p_muertes")==0){
+        Par<unsigned int,Provincia> porMuertes[24];
+        for(int i=0;i<24;i++){
+            porMuertes[i]= {Provincias[i].muertes,Provincias[i]};
+        }
+        quicksort(porMuertes,0,23);
+        int n;
+        if(argc<=2)
+            n=10;
+        else
+            n = stoi(argv[2]);
+        for (int i = 0; i < n; i++) {
+            cout << porMuertes[i].valor.Nombre << ": " << endl;
+            cout << "Cantidad de muertos: " << porMuertes[i].valor.muertes << endl;
+        }
+        /*for (int i = 0; i < n; i++) {
+            cout << "Lista de casos en: "<<porMuertes[i].valor.Nombre<< endl;
+            Orden.get(porMuertes[i].valor.Nombre)->print();
+        }*/
+    }
 }
 
 void generate_all_Provincias(Provincia *Provincias){
@@ -317,10 +365,10 @@ template <typename T> void quicksort(T *arr, int start, int end) {
     T temp;
 
     while (izq <= der) {
-        while (arr[der] > pivote)
+        while (arr[der] < pivote)
             der--;
 
-        while (arr[izq] < pivote)
+        while (arr[izq] > pivote)
             izq++;
 
         if (izq <= der) {
