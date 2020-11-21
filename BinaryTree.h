@@ -105,8 +105,8 @@ template <class T> TreeNode<T> *BinaryTree<T>::put(T dato, TreeNode<T> *r) {
 
     if (r == nullptr)
         return new TreeNode<T>(dato);
-
-    if (dato > r->getData()) {
+//Modificado el put >= va a la derecha
+    if (dato >= r->getData()) {
         r->setRight(put(dato, r->getRight()));
     } else if (dato < r->getData()) {
         r->setLeft(put(dato, r->getLeft()));

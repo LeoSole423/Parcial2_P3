@@ -7,6 +7,7 @@
 
 #include <string>
 #include <ostream>
+#include "Fecha.h"
 
 using namespace std;
 
@@ -25,7 +26,7 @@ public:
     int sepi_apertura;
     string fecha_internacion;
     string cuidado_intensivo;
-    string fecha_cui_intensivo;
+    Fecha fecha_cui_intensivo;
     string fallecido;
     string fecha_fallecimiento;
     string asistencia_respiratoria_mecanica;
@@ -57,9 +58,8 @@ public:
         return os;
     }
 
-
     bool operator<(const Caso &rhs) const {
-        return id < rhs.id;
+        return fecha_cui_intensivo < rhs.fecha_cui_intensivo;
     }
 
     bool operator>(const Caso &rhs) const {
