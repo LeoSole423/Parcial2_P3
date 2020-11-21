@@ -28,9 +28,21 @@ int main(int argc,char **argv) {
 void read_and_save(Provincia *Provincias,int argc,char **argv) {
     Caso myCases;//siempre menos -estad
     HashMapTree<string, List<Caso> *> Orden(24, miHF);//Para provincias
+    //Variables casos_cui
     BinaryTree<Caso> OrdenFecha;
+    Fecha fecha_lim;
+    if(strcmp(argv[1], "-casos_cui") == 0 && argc<3){
+        fecha_lim={0,0,0};
+    }
+    else if(strcmp(argv[1], "-casos_cui") == 0 && argc>2){
+        fecha_lim=stoFecha(argv[2]);
+    }
+    //
+    //Para lectura del csv
     string line_csv[25];
     string line_titles_csv;
+    //
+    //Contadores para analisis estadistico
     int count_samples = 0, count_infected = 0, count_death = 0;
     int inf_RE_10A[11];
     for (int i = 0; i < 12; i++) {
@@ -40,6 +52,7 @@ void read_and_save(Provincia *Provincias,int argc,char **argv) {
     for (int i = 0; i < 12; i++) {
         f_RE_10A[i] = 0;
     }
+    //
     ifstream myFile;
     myFile.open("C:/Users/leone/Desktop/Covid19Casos.csv");
     getline(myFile, line_titles_csv);
@@ -268,7 +281,7 @@ void read_and_save(Provincia *Provincias,int argc,char **argv) {
         }
         //Orden en arbol segun fecha de cuidados intensivos
         if (strcmp(argv[1], "-casos_cui") == 0) {
-            if (line_csv[12].find("SI") != -1) {
+            if (line_csv[12].find("SI") != -1 && stoFecha(line_csv[13])>fecha_lim) {
                 myCases = {stoi(line_csv[0]),
                            line_csv[1],
                            stoi(line_csv[2]),
@@ -324,7 +337,7 @@ void read_and_save(Provincia *Provincias,int argc,char **argv) {
             quicksort(porInfectados, 0, 23);
             int n;
             if (argc <= 2)
-                n = 10;
+                n = 24;
             else
                 n = stoi(argv[2]);
             for (int i = 0; i < n; i++) {
