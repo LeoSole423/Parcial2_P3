@@ -360,7 +360,7 @@ void read_and_save(Provincia *Provincias,int argc,char **argv) {
             quicksort(porMuertes, 0, 23);
             int n;
             if (argc <= 2)
-                n = 10;
+                n = 24;
             else
                 n = stoi(argv[2]);
             for (int i = 0; i < n; i++) {
