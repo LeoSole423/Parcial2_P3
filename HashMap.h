@@ -1,6 +1,8 @@
 //
 // Created by leone on 11/18/2020.
-//
+//PARCIAL2_P3_HASHMAP_H
+#ifndef PARCIAL2_P3_HASHMAP_H
+#define PARCIAL2_P3_HASHMAP_H
 
 #include "HashEntry.h"
 
@@ -60,8 +62,6 @@ template <class K, class T> T HashMap<K, T>::get(K clave) {
     if (table[pos] == nullptr)
         throw 404;
 
-    if (table[pos]->getKey() != clave)
-        throw 404;
 
     return table[pos]->getDato();
 }
@@ -100,4 +100,4 @@ HashMap<K, T>::HashMap(unsigned int size, unsigned int (*fp)(K)) {
     hashFuncP = fp;
 }
 
-#endif //PARCIAL2_P3_HASHMAP_H
+#endif PARCIAL2_P3_HASHMAP_H

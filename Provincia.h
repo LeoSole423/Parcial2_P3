@@ -11,6 +11,7 @@ public:
     string Nombre;
     unsigned int contagios;
     unsigned int muertes;
+    int id;
 
 };
 #endif //PARCIAL2_P3_PROVINCIA_H

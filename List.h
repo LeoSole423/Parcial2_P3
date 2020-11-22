@@ -283,7 +283,8 @@ template <class T> void List<T>::print() {
         std::cout << aux->getData() << " -> ";
         aux = aux->getNext();
     }
-    std::cout << std::endl;
+    //std::cout << std::endl;
+    std::cout <<'\n';
 }
 
 #endif //PARCIAL2_P3_LIST_H

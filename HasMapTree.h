@@ -101,4 +101,4 @@ HashMapTree<K, T>::HashMapTree(unsigned int size, unsigned int (*fp)(K)) {
     }
     hashFuncP = fp;
 }
-#endif //PARCIAL2_P3_HASMAPTREE_H
+#endif PARCIAL2_P3_HASMAPTREE_H

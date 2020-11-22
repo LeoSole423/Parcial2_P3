@@ -1,41 +1,52 @@
 #include <iostream>
+
 using namespace std;
+
 #include <fstream>
 #include <string>
 #include "Case.h"
 #include "BinaryTree.h"
 #include "Provincia.h"
 #include "HasMapTree.h"
+#include "HashMap.h"
 #include "List.h"
 #include "Par.h"
 #include "Fecha.h"
 #include <string.h>
 
-void read_and_save(Provincia *Provincias,int argc,char **argv);
+void read_and_save(Provincia *Provincias, int argc, char **argv);
+
 void generate_all_Provincias(Provincia *Provincias);
-template <typename T> void quicksort(T *arr, int start, int end);
-unsigned int miHF(string c);
+
+template<typename T>
+void quicksort(T *arr, int start, int end);
+
+unsigned int miHF(int c);
+
 Fecha stoFecha(string fecha_string);
 
-int main(int argc,char **argv) {
-        Provincia Provincias[24];
-        generate_all_Provincias(Provincias);
-        read_and_save(Provincias,argc,argv);
-        return 0;
+int main(int argc, char **argv) {
+    Provincia Provincias[24];
+    generate_all_Provincias(Provincias);
+    read_and_save(Provincias, argc, argv);
+    return 0;
 }
 
 
-void read_and_save(Provincia *Provincias,int argc,char **argv) {
+void read_and_save(Provincia *Provincias, int argc, char **argv) {
     Caso myCases;//siempre menos -estad
-    HashMapTree<string, List<Caso> *> Orden(24, miHF);//Para provincias
+    //Para provincias
+    HashMap<int, List<Caso> *> Orden(29, miHF);
+    for(int i=0;i<29;i++){
+        Orden.put(i,new List<Caso>());
+    }
     //Variables casos_cui
     BinaryTree<Caso> OrdenFecha;
     Fecha fecha_lim;
-    if(strcmp(argv[1], "-casos_cui") == 0 && argc<3){
-        fecha_lim={0,0,0};
-    }
-    else if(strcmp(argv[1], "-casos_cui") == 0 && argc>2){
-        fecha_lim=stoFecha(argv[2]);
+    if (strcmp(argv[1], "-casos_cui") == 0 && argc < 3) {
+        fecha_lim = {0, 0, 0};
+    } else if (strcmp(argv[1], "-casos_cui") == 0 && argc > 2) {
+        fecha_lim = stoFecha(argv[2]);
     }
     //
     //Para lectura del csv
@@ -54,7 +65,7 @@ void read_and_save(Provincia *Provincias,int argc,char **argv) {
     }
     //
     ifstream myFile;
-    myFile.open("C:/Users/leone/Desktop/Covid19Casos.csv");
+    myFile.open("C:/Users/leone/Desktop/Covid19Casos-1000.csv");
     getline(myFile, line_titles_csv);
     string complete_line_csv;
     while (getline(myFile, complete_line_csv)) {
@@ -203,7 +214,7 @@ void read_and_save(Provincia *Provincias,int argc,char **argv) {
         }
         //Muestra la carga
         if (count_samples % 10000 == 0) {
-            cout << (count_samples * 100) / 2710000 << "%" << endl;
+            cout << (count_samples * 100) / 100000 << "%" << endl;
         }
         if (line_csv[2] == "") line_csv[2] = "-1"; //Arregla error stoi
         if (line_csv[0] == "") break;
@@ -234,17 +245,18 @@ void read_and_save(Provincia *Provincias,int argc,char **argv) {
                        line_csv[22],
                        stoi(line_csv[23]),
                        line_csv[24]};
+
             try {
-                Orden.get(myCases.residencia_provincia_nombre)->insert(0, myCases);
+                Orden.get(myCases.residencia_provincia_id)->insert(0, myCases);
             }
             catch (...) {
-                Orden.put(myCases.residencia_provincia_nombre, new List<Caso>());
-                Orden.get(myCases.residencia_provincia_nombre)->insert(0, myCases);
+                Orden.put(myCases.residencia_provincia_id, new List<Caso>());
+                Orden.get(myCases.residencia_provincia_id)->insert(0, myCases);
             }
         }
-        // Mete en la lista enlazada del hash solo los datos cuya edad coincida con la string de arv[2] -> (Años) o (Meses)
+        // Mete en la lista enlazada del hash solo los datos cuya edad coincida con la string de arv[2]
         if (strcmp(argv[1], "-casos_edad") == 0) {
-            if (line_csv[3].compare(argv[2]) == 0) {
+            if (stoi(line_csv[2])==stoi(argv[2])) {
                 myCases = {stoi(line_csv[0]),
                            line_csv[1],
                            stoi(line_csv[2]),
@@ -271,17 +283,17 @@ void read_and_save(Provincia *Provincias,int argc,char **argv) {
                            stoi(line_csv[23]),
                            line_csv[24]};
                 try {
-                    Orden.get(myCases.residencia_provincia_nombre)->insert(0, myCases);
+                    Orden.get(myCases.residencia_provincia_id)->insert(0, myCases);
                 }
                 catch (...) {
-                    Orden.put(myCases.residencia_provincia_nombre, new List<Caso>());
-                    Orden.get(myCases.residencia_provincia_nombre)->insert(0, myCases);
+                    Orden.put(myCases.residencia_provincia_id, new List<Caso>());
+                    Orden.get(myCases.residencia_provincia_id)->insert(0, myCases);
                 }
             }
         }
         //Orden en arbol segun fecha de cuidados intensivos
         if (strcmp(argv[1], "-casos_cui") == 0) {
-            if (line_csv[12].find("SI") != -1 && stoFecha(line_csv[13])>fecha_lim) {
+            if (line_csv[12].find("SI") != -1 && stoFecha(line_csv[13]) > fecha_lim) {
                 myCases = {stoi(line_csv[0]),
                            line_csv[1],
                            stoi(line_csv[2]),
@@ -311,126 +323,128 @@ void read_and_save(Provincia *Provincias,int argc,char **argv) {
             }
         }
     }
-        myFile.close();
-        //Analisis Estadistico
-        if (strcmp(argv[1], "-estad") == 0) {
-            cout << "Cantidad total de muestras: " << count_samples << endl;
-            cout << "Cantidad total de infectados: " << count_infected << endl;
-            cout << "Cantidad total de muertos: " << count_death << endl;
-            cout << "% Infectados por muestra: " << (count_infected / (float) count_samples) * 100 << "%" << endl;
-            cout << "% Fallecidos por muestra: " << (count_death / (float) count_samples) * 100 << "%" << endl;
-            cout << "Infectados por Rango Etario" << endl;
-            for (int i = 0; i < 11; i++) {
-                cout << "Infectados entre " << 10 * i << " y " << 10 * (i + 1) << ": " << inf_RE_10A[i] << endl;
-            }
-            cout << endl << "Fallecidos por Rango Etario" << endl;
-            for (int i = 0; i < 11; i++) {
-                cout << "Fallecidos entre " << 10 * i << " y " << 10 * (i + 1) << ": " << f_RE_10A[i] << endl;
-            }
+    myFile.close();
+    //Analisis Estadistico
+    if (strcmp(argv[1], "-estad") == 0) {
+        cout << "Cantidad total de muestras: " << count_samples << endl;
+        cout << "Cantidad total de infectados: " << count_infected << endl;
+        cout << "Cantidad total de muertos: " << count_death << endl;
+        cout << "% Infectados por muestra: " << (count_infected / (float) count_samples) * 100 << "%" << endl;
+        cout << "% Fallecidos por muestra: " << (count_death / (float) count_samples) * 100 << "%" << endl;
+        cout << "Infectados por Rango Etario" << endl;
+        for (int i = 0; i < 11; i++) {
+            cout << "Infectados entre " << 10 * i << " y " << 10 * (i + 1) << ": " << inf_RE_10A[i] << endl;
         }
-        //p_casos
-        if (strcmp(argv[1], "-p_casos") == 0) {
-            Par<unsigned int, Provincia> porInfectados[24];
-            for (int i = 0; i < 24; i++) {
-                porInfectados[i] = {Provincias[i].contagios, Provincias[i]};
-            }
-            quicksort(porInfectados, 0, 23);
-            int n;
-            if (argc <= 2)
-                n = 24;
-            else
-                n = stoi(argv[2]);
-            for (int i = 0; i < n; i++) {
-                cout << porInfectados[i].valor.Nombre << ": " << endl;
-                cout << "Cantidad de contagios: " << porInfectados[i].valor.contagios << endl;
-            }
-            //Muestra la lista de casos en la Provincia
-            /*for (int i = 0; i < n; i++) {
-                cout << "Lista de casos en: "<<porInfectados[i].valor.Nombre<< endl;
-                Orden.get(porInfectados[i].valor.Nombre)->print();
-            }*/
+        cout << endl << "Fallecidos por Rango Etario" << endl;
+        for (int i = 0; i < 11; i++) {
+            cout << "Fallecidos entre " << 10 * i << " y " << 10 * (i + 1) << ": " << f_RE_10A[i] << endl;
         }
-        //Muestra la lista de casos en la Provincia (10 minutos)
-        //p_muertes
-        if (strcmp(argv[1], "-p_muertes") == 0) {
-            Par<unsigned int, Provincia> porMuertes[24];
-            for (int i = 0; i < 24; i++) {
-                porMuertes[i] = {Provincias[i].muertes, Provincias[i]};
-            }
-            quicksort(porMuertes, 0, 23);
-            int n;
-            if (argc <= 2)
-                n = 24;
-            else
-                n = stoi(argv[2]);
-            for (int i = 0; i < n; i++) {
-                cout << porMuertes[i].valor.Nombre << ": " << endl;
-                cout << "Cantidad de muertos: " << porMuertes[i].valor.muertes << endl;
-            }
-            //Muestra la lista de casos en la Provincia (10 minutos)
-            /*for (int i = 0; i < n; i++) {
-                cout << "Lista de casos en: "<<porMuertes[i].valor.Nombre<< endl;
-                Orden.get(porMuertes[i].valor.Nombre)->print();
-            }*/
+    }
+    //p_casos
+    if (strcmp(argv[1], "-p_casos") == 0) {
+        Par<unsigned int, Provincia> porInfectados[24];
+        for (int i = 0; i < 24; i++) {
+            porInfectados[i] = {Provincias[i].contagios, Provincias[i]};
         }
-        //casos_edad Años  (Problema en CORDOBA CON MESES y Años)
-        if (strcmp(argv[1], "-casos_edad") == 0) {
-            //Orden por Alfabeto de provincias
-            Provincia aux;
-            int ord;
-            do {
-                ord = 0;
-                for (int i = 0; i < 23; i++) {
-                    if (Provincias[i].Nombre.compare(Provincias[i + 1].Nombre) > 0) {
-                        ord = 1;
-                        aux = Provincias[i + 1];
-                        Provincias[i + 1] = Provincias[i];
-                        Provincias[i] = aux;
-                    }
+        quicksort(porInfectados, 0, 23);
+        int n;
+        if (argc <= 2)
+            n = 24;
+        else
+            n = stoi(argv[2]);
+        for (int i = 0; i < n; i++) {
+            cout << porInfectados[i].valor.Nombre << ": " << endl;
+            cout << "Cantidad de contagios: " << porInfectados[i].valor.contagios << endl;
+        }
+        //Muestra la lista de casos en la Provincia
+        for (int i = 0; i < n; i++) {
+            cout << "Lista de casos en: " << porInfectados[i].valor.Nombre << endl;
+            system("PAUSE");
+            Orden.get(porInfectados[i].valor.id)->print();
+        }
+    }
+    //p_muertes
+    if (strcmp(argv[1], "-p_muertes") == 0) {
+        Par<unsigned int, Provincia> porMuertes[24];
+        for (int i = 0; i < 24; i++) {
+            porMuertes[i] = {Provincias[i].muertes, Provincias[i]};
+        }
+        quicksort(porMuertes, 0, 23);
+        int n;
+        if (argc <= 2)
+            n = 24;
+        else
+            n = stoi(argv[2]);
+        for (int i = 0; i < n; i++) {
+            cout << porMuertes[i].valor.Nombre << ": " << endl;
+            cout << "Cantidad de muertos: " << porMuertes[i].valor.muertes << endl;
+        }
+        //Muestra la lista de casos en la Provincia
+        for (int i = 0; i < n; i++) {
+            cout << "Lista de casos en: "<<porMuertes[i].valor.Nombre<< endl;
+            system("PAUSE");
+            Orden.get(porMuertes[i].valor.id)->print();
+        }
+    }
+    //casos_edad Años  (Problema en CORDOBA CON MESES y Años)
+    if (strcmp(argv[1], "-casos_edad") == 0) {
+        //Orden por Alfabeto de provincias
+        Provincia aux;
+        int ord;
+        do {
+            ord = 0;
+            for (int i = 0; i < 23; i++) {
+                if (Provincias[i].Nombre.compare(Provincias[i + 1].Nombre) > 0) {
+                    ord = 1;
+                    aux = Provincias[i + 1];
+                    Provincias[i + 1] = Provincias[i];
+                    Provincias[i] = aux;
                 }
-            } while (ord != 0);
-            for (int i = 0; i < 24; i++) {
-                cout << endl << "Lista de casos de la Provincia " << Provincias[i].Nombre << endl;
-                system("PAUSE");
-                Orden.get(Provincias[i].Nombre)->print();
             }
+        } while (ord != 0);
+        for (int i = 0; i < 24; i++) {
+            cout << endl << "Lista de casos de la Provincia " << Provincias[i].Nombre << endl;
+            system("PAUSE");
+            Orden.get(Provincias[i].id)->print();
         }
-        //casos_cui
-        if(strcmp(argv[1], "-casos_cui") == 0){
-            OrdenFecha.inorder();
-        }
-
+    }
+    //casos_cui
+    if (strcmp(argv[1], "-casos_cui") == 0) {
+        OrdenFecha.inorder();
     }
 
-
-void generate_all_Provincias(Provincia *Provincias){
-    Provincias[0]={"Buenos Aires",0,0};
-    Provincias[1]={"La Pampa",0,0};
-    Provincias[2]={"Cordoba",0,0};
-    Provincias[3]={"Salta",0,0};
-    Provincias[4]={"Jujuy",0,0};
-    Provincias[5]={"Formosa",0,0};
-    Provincias[6]={"Santiago del Estero",0,0};
-    Provincias[7]={"Misiones",0,0};
-    Provincias[8]={"Corrientes",0,0};
-    Provincias[9]={"Tucuman",0,0};
-    Provincias[10]={"Chaco",0,0};
-    Provincias[11]={"La Rioja",0,0};
-    Provincias[12]={"San Juan",0,0};
-    Provincias[13]={"Mendoza",0,0};
-    Provincias[14]={"Entre Rios",0,0};
-    Provincias[15]={"San Luis",0,0};
-    Provincias[16]={"Catamarca",0,0};
-    Provincias[17]={"Santa Fe",0,0};
-    Provincias[18]={"Neuquen",0,0};
-    Provincias[19]={"Rio Negro",0,0};
-    Provincias[20]={"Chubut",0,0};
-    Provincias[21]={"Santa Cruz",0,0};
-    Provincias[22]={"Tierra del Fuego",0,0};
-    Provincias[23]={"CABA",0,0};
 }
 
-template <typename T> void quicksort(T *arr, int start, int end) {
+
+void generate_all_Provincias(Provincia *Provincias) {
+    Provincias[0] = {"Buenos Aires", 0, 0,6};
+    Provincias[1] = {"La Pampa", 0, 0,42};
+    Provincias[2] = {"Córdoba", 0, 0,14};
+    Provincias[3] = {"Salta", 0, 0,66};
+    Provincias[4] = {"Jujuy", 0, 0,38};
+    Provincias[5] = {"Formosa", 0, 0,34};
+    Provincias[6] = {"Santiago del Estero", 0, 0,86};
+    Provincias[7] = {"Misiones", 0, 0,54};
+    Provincias[8] = {"Corrientes", 0, 0,18};
+    Provincias[9] = {"Tucumán", 0, 0,90};
+    Provincias[10] = {"Chaco", 0, 0,22};
+    Provincias[11] = {"La Rioja", 0, 0,46};
+    Provincias[12] = {"San Juan", 0, 0,70};
+    Provincias[13] = {"Mendoza", 0, 0,50};
+    Provincias[14] = {"Entre Ríos", 0, 0,30};
+    Provincias[15] = {"San Luis", 0, 0,74};
+    Provincias[16] = {"Catamarca", 0, 0,10};
+    Provincias[17] = {"Santa Fe", 0, 0,82};
+    Provincias[18] = {"Neuquén", 0, 0,58};
+    Provincias[19] = {"Río Negro", 0, 0,62};
+    Provincias[20] = {"Chubut", 0, 0,26};
+    Provincias[21] = {"Santa Cruz", 0, 0,78};
+    Provincias[22] = {"Tierra del Fuego", 0, 0,94};
+    Provincias[23] = {"CABA", 0, 0,2};
+}
+
+template<typename T>
+void quicksort(T *arr, int start, int end) {
     T pivote = arr[start];
     int izq = start;
     int der = end;
@@ -459,27 +473,23 @@ template <typename T> void quicksort(T *arr, int start, int end) {
         quicksort(arr, izq, end);
 }
 
-unsigned int miHF(string c) {
-    unsigned int pos = 0;
-    for (int i = 0; i < c.length(); ++i) {
-        pos += c[i];
-    }
-    return pos;
+unsigned int miHF(int c) {
+    return c*7;
 }
 
-Fecha stoFecha(string fecha_string){
+Fecha stoFecha(string fecha_string) {
     Fecha f;
-    if(fecha_string.compare("")==0){
-        f.dia=0;
-        f.mes=0;
-        f.anio=0;
+    if (fecha_string.compare("") == 0) {
+        f.dia = 0;
+        f.mes = 0;
+        f.anio = 0;
         return f;
     }
-    f.anio= stoi(fecha_string.substr(0, fecha_string.find('-')));
-    fecha_string=fecha_string.substr(fecha_string.find('-')+1,fecha_string.length()-1);
-    f.mes= stoi(fecha_string.substr(0, fecha_string.find('-')));
-    fecha_string=fecha_string.substr(fecha_string.find('-')+1,fecha_string.length()-1);
-    f.dia= stoi(fecha_string);
+    f.anio = stoi(fecha_string.substr(0, fecha_string.find('-')));
+    fecha_string = fecha_string.substr(fecha_string.find('-') + 1, fecha_string.length() - 1);
+    f.mes = stoi(fecha_string.substr(0, fecha_string.find('-')));
+    fecha_string = fecha_string.substr(fecha_string.find('-') + 1, fecha_string.length() - 1);
+    f.dia = stoi(fecha_string);
     return f;
 }
 
