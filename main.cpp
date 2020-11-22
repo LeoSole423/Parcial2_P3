@@ -65,7 +65,7 @@ void read_and_save(Provincia *Provincias, int argc, char **argv) {
     }
     //
     ifstream myFile;
-    myFile.open("C:/Users/leone/Desktop/Covid19Casos-1000.csv");
+    myFile.open("C:/Users/leone/Desktop/Covid19Casos-100000.csv");
     getline(myFile, line_titles_csv);
     string complete_line_csv;
     while (getline(myFile, complete_line_csv)) {
@@ -361,6 +361,7 @@ void read_and_save(Provincia *Provincias, int argc, char **argv) {
             cout << "Lista de casos en: " << porInfectados[i].valor.Nombre << endl;
             system("PAUSE");
             Orden.get(porInfectados[i].valor.id)->print();
+            cout<<endl;
         }
     }
     //p_muertes
@@ -410,6 +411,7 @@ void read_and_save(Provincia *Provincias, int argc, char **argv) {
     }
     //casos_cui
     if (strcmp(argv[1], "-casos_cui") == 0) {
+        cout<<"Casos que recivieron cuidados intencivos: \n";
         OrdenFecha.inorder();
     }
 
