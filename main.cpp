@@ -37,15 +37,15 @@ void read_and_save(Provincia *Provincias, int argc, char **argv) {
     Caso myCases;//siempre menos -estad
     //Para provincias
     HashMap<int, List<Caso> *> Orden(29, miHF);
-    for(int i=0;i<29;i++){
-        Orden.put(i,new List<Caso>());
+    for (int i = 0; i < 29; i++) {
+        Orden.put(i, new List<Caso>());
     }
     //Variables casos_cui
     BinaryTree<Caso> OrdenFecha;
     Fecha fecha_lim;
-    if (strcmp(argv[1], "-casos_cui") == 0 && argc < 3) {
+    if (strcmp(argv[1], "-casos_cui") == 0 && argc < 4) {
         fecha_lim = {0, 0, 0};
-    } else if (strcmp(argv[1], "-casos_cui") == 0 && argc > 2) {
+    } else if (strcmp(argv[1], "-casos_cui") == 0 && argc >= 4) {
         fecha_lim = stoFecha(argv[2]);
     }
     //
@@ -65,7 +65,7 @@ void read_and_save(Provincia *Provincias, int argc, char **argv) {
     }
     //
     ifstream myFile;
-    myFile.open("C:/Users/leone/Desktop/Covid19Casos-100000.csv");
+    myFile.open(argv[argc - 1]);
     getline(myFile, line_titles_csv);
     string complete_line_csv;
     while (getline(myFile, complete_line_csv)) {
@@ -255,8 +255,8 @@ void read_and_save(Provincia *Provincias, int argc, char **argv) {
             }
         }
         // Mete en la lista enlazada del hash solo los datos cuya edad coincida con la string de arv[2]
-        if (strcmp(argv[1], "-casos_edad") == 0) {
-            if (stoi(line_csv[2])==stoi(argv[2])) {
+        if (strcmp(argv[1], "-casos_edad") == 0 && line_csv[3].compare("Años") == 0) {
+            if (stoi(line_csv[2]) == stoi(argv[2])) {
                 myCases = {stoi(line_csv[0]),
                            line_csv[1],
                            stoi(line_csv[2]),
@@ -348,7 +348,7 @@ void read_and_save(Provincia *Provincias, int argc, char **argv) {
         }
         quicksort(porInfectados, 0, 23);
         int n;
-        if (argc <= 2)
+        if (argc <= 3)
             n = 24;
         else
             n = stoi(argv[2]);
@@ -361,7 +361,7 @@ void read_and_save(Provincia *Provincias, int argc, char **argv) {
             cout << "Lista de casos en: " << porInfectados[i].valor.Nombre << endl;
             system("PAUSE");
             Orden.get(porInfectados[i].valor.id)->print();
-            cout<<endl;
+            cout << endl;
         }
     }
     //p_muertes
@@ -372,7 +372,7 @@ void read_and_save(Provincia *Provincias, int argc, char **argv) {
         }
         quicksort(porMuertes, 0, 23);
         int n;
-        if (argc <= 2)
+        if (argc <= 3)
             n = 24;
         else
             n = stoi(argv[2]);
@@ -382,7 +382,7 @@ void read_and_save(Provincia *Provincias, int argc, char **argv) {
         }
         //Muestra la lista de casos en la Provincia
         for (int i = 0; i < n; i++) {
-            cout << "Lista de casos en: "<<porMuertes[i].valor.Nombre<< endl;
+            cout << "\nLista de casos en: " << porMuertes[i].valor.Nombre << endl;
             system("PAUSE");
             Orden.get(porMuertes[i].valor.id)->print();
         }
@@ -411,7 +411,12 @@ void read_and_save(Provincia *Provincias, int argc, char **argv) {
     }
     //casos_cui
     if (strcmp(argv[1], "-casos_cui") == 0) {
-        cout<<"Casos que recivieron cuidados intencivos: \n";
+        cout << "Casos que recivieron cuidados intencivos ";
+        if (argc >= 4)
+            cout << "a partir de la fecha " << argv[2] << ": " << endl;
+        else
+            cout << ": " << endl;
+        system("PAUSE");
         OrdenFecha.inorder();
     }
 
@@ -419,30 +424,30 @@ void read_and_save(Provincia *Provincias, int argc, char **argv) {
 
 
 void generate_all_Provincias(Provincia *Provincias) {
-    Provincias[0] = {"Buenos Aires", 0, 0,6};
-    Provincias[1] = {"La Pampa", 0, 0,42};
-    Provincias[2] = {"Córdoba", 0, 0,14};
-    Provincias[3] = {"Salta", 0, 0,66};
-    Provincias[4] = {"Jujuy", 0, 0,38};
-    Provincias[5] = {"Formosa", 0, 0,34};
-    Provincias[6] = {"Santiago del Estero", 0, 0,86};
-    Provincias[7] = {"Misiones", 0, 0,54};
-    Provincias[8] = {"Corrientes", 0, 0,18};
-    Provincias[9] = {"Tucumán", 0, 0,90};
-    Provincias[10] = {"Chaco", 0, 0,22};
-    Provincias[11] = {"La Rioja", 0, 0,46};
-    Provincias[12] = {"San Juan", 0, 0,70};
-    Provincias[13] = {"Mendoza", 0, 0,50};
-    Provincias[14] = {"Entre Ríos", 0, 0,30};
-    Provincias[15] = {"San Luis", 0, 0,74};
-    Provincias[16] = {"Catamarca", 0, 0,10};
-    Provincias[17] = {"Santa Fe", 0, 0,82};
-    Provincias[18] = {"Neuquén", 0, 0,58};
-    Provincias[19] = {"Río Negro", 0, 0,62};
-    Provincias[20] = {"Chubut", 0, 0,26};
-    Provincias[21] = {"Santa Cruz", 0, 0,78};
-    Provincias[22] = {"Tierra del Fuego", 0, 0,94};
-    Provincias[23] = {"CABA", 0, 0,2};
+    Provincias[0] = {"Buenos Aires", 0, 0, 6};
+    Provincias[1] = {"La Pampa", 0, 0, 42};
+    Provincias[2] = {"Córdoba", 0, 0, 14};
+    Provincias[3] = {"Salta", 0, 0, 66};
+    Provincias[4] = {"Jujuy", 0, 0, 38};
+    Provincias[5] = {"Formosa", 0, 0, 34};
+    Provincias[6] = {"Santiago del Estero", 0, 0, 86};
+    Provincias[7] = {"Misiones", 0, 0, 54};
+    Provincias[8] = {"Corrientes", 0, 0, 18};
+    Provincias[9] = {"Tucumán", 0, 0, 90};
+    Provincias[10] = {"Chaco", 0, 0, 22};
+    Provincias[11] = {"La Rioja", 0, 0, 46};
+    Provincias[12] = {"San Juan", 0, 0, 70};
+    Provincias[13] = {"Mendoza", 0, 0, 50};
+    Provincias[14] = {"Entre Ríos", 0, 0, 30};
+    Provincias[15] = {"San Luis", 0, 0, 74};
+    Provincias[16] = {"Catamarca", 0, 0, 10};
+    Provincias[17] = {"Santa Fe", 0, 0, 82};
+    Provincias[18] = {"Neuquén", 0, 0, 58};
+    Provincias[19] = {"Río Negro", 0, 0, 62};
+    Provincias[20] = {"Chubut", 0, 0, 26};
+    Provincias[21] = {"Santa Cruz", 0, 0, 78};
+    Provincias[22] = {"Tierra del Fuego", 0, 0, 94};
+    Provincias[23] = {"CABA", 0, 0, 2};
 }
 
 template<typename T>
@@ -476,7 +481,7 @@ void quicksort(T *arr, int start, int end) {
 }
 
 unsigned int miHF(int c) {
-    return c*7;
+    return c * 7;
 }
 
 Fecha stoFecha(string fecha_string) {
