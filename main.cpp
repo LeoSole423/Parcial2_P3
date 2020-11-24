@@ -26,15 +26,15 @@ unsigned int miHF(int c);
 Fecha stoFecha(string fecha_string);
 
 int main(int argc, char **argv) {
-    Provincia Provincias[24];
-    generate_all_Provincias(Provincias);
-    read_and_save(Provincias, argc, argv);
+    Provincia Provincias[24]; //Arreglo de Todas las Provincias
+    generate_all_Provincias(Provincias); // Pone los nombres y su id a cada Provincia y inicializa a 0 sus contadores de muertes y contagios;
+    read_and_save(Provincias, argc,argv); // Hace la lectura y ordena la informacion del csv para hacer un print segun los argumentos pasados;
     return 0;
 }
 
 
 void read_and_save(Provincia *Provincias, int argc, char **argv) {
-    Caso myCases;//siempre menos -estad
+    Caso myCases;
     //Para provincias
     HashMap<int, List<Caso> *> Orden(29, miHF);
     for (int i = 0; i < 29; i++) {
@@ -63,17 +63,17 @@ void read_and_save(Provincia *Provincias, int argc, char **argv) {
     for (int i = 0; i < 12; i++) {
         f_RE_10A[i] = 0;
     }
-    //
+    //Se empieza a leer el archivo
     ifstream myFile;
     myFile.open(argv[argc - 1]);
-    getline(myFile, line_titles_csv);
+    getline(myFile, line_titles_csv);//Salteo el titulo
     string complete_line_csv;
     while (getline(myFile, complete_line_csv)) {
         for (int i = 0; i < 25; i++) {
             line_csv[i] = complete_line_csv.substr(0, complete_line_csv.find(','));
             complete_line_csv = complete_line_csv.substr(complete_line_csv.find(',') + 1,
                                                          complete_line_csv.length() - 1);
-            if (line_csv[i].length() > 2) { line_csv[i] = line_csv[i].substr(1, line_csv[i].length() - 2); }
+            if (line_csv[i].length() > 2) { line_csv[i] = line_csv[i].substr(1, line_csv[i].length() - 2); }//Corta las comillas
         }
         count_samples++;
         //Contadores para analisis Estadistico
@@ -254,7 +254,7 @@ void read_and_save(Provincia *Provincias, int argc, char **argv) {
                 Orden.get(myCases.residencia_provincia_id)->insert(0, myCases);
             }
         }
-        // Mete en la lista enlazada del hash solo los datos cuya edad coincida con la string de arv[2]
+        // Mete en la lista enlazada del hash solo los datos cuya edad coincida con la string de argv[2]
         if (strcmp(argv[1], "-casos_edad") == 0 && line_csv[3].compare("Años") == 0) {
             if (stoi(line_csv[2]) == stoi(argv[2])) {
                 myCases = {stoi(line_csv[0]),
@@ -387,7 +387,7 @@ void read_and_save(Provincia *Provincias, int argc, char **argv) {
             Orden.get(porMuertes[i].valor.id)->print();
         }
     }
-    //casos_edad Años  (Problema en CORDOBA CON MESES y Años)
+    //casos_edad Años
     if (strcmp(argv[1], "-casos_edad") == 0) {
         //Orden por Alfabeto de provincias
         Provincia aux;
